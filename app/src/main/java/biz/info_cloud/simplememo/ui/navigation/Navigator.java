@@ -33,7 +33,7 @@ public class Navigator {
 
     public void openContentList() {
         ContentListFragment fragment = new ContentListFragment();
-        startFragment(fragment);
+        startFragment(fragment, true);
     }
 
     public void openEditor(@Nullable String memoId) {
@@ -43,10 +43,14 @@ public class Navigator {
             bundle.putString(EditFragment.BUNDLE_MEMO_ID, memoId);
             editFragment.setArguments(bundle);
         }
-        startFragment(editFragment);
+        startFragment(editFragment, false);
     }
 
     public void back() {
+        if (getFragmentManager().getBackStackEntryCount() < 1) {
+            activity.finish();
+            return;
+        }
         getFragmentManager().popBackStackImmediate();
     }
 
@@ -56,12 +60,14 @@ public class Navigator {
         }
     }
 
-    private void startFragment(BaseFragment fragment) {
+    private void startFragment(BaseFragment fragment, boolean first) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 
-        ft.replace(R.id.main_content, fragment)
-                .addToBackStack(null)
-                .commit();
+        ft.replace(R.id.main_content, fragment);
+        if (!first) {
+            ft.addToBackStack(null);
+        }
+        ft.commit();
     }
 
     private FragmentManager getFragmentManager() {
