@@ -38,9 +38,9 @@ public class Navigator {
 
     public void openEditor(@Nullable String memoId) {
         EditFragment editFragment = new EditFragment();
-        if (StringUtil.isNullOrEmpty(memoId)) {
+        if (!StringUtil.isNullOrEmpty(memoId)) {
             Bundle bundle = new Bundle();
-            bundle.putCharSequence(EditFragment.BUNDLE_MEMO_ID, memoId);
+            bundle.putString(EditFragment.BUNDLE_MEMO_ID, memoId);
             editFragment.setArguments(bundle);
         }
         startFragment(editFragment);

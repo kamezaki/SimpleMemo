@@ -51,6 +51,9 @@ public class ContentListPresenter implements Presenter {
         void updateMemoList(List<Memo> memoList);
     }
 
+    public void onListItemClicked(Memo memo) {
+        navigator.openEditor(memo.getId());
+    }
 
     private final class ContentListSubscriber extends Subscriber<List<Memo>> {
 
@@ -66,7 +69,6 @@ public class ContentListPresenter implements Presenter {
 
         @Override
         public void onNext(List<Memo> memoList) {
-            android.util.Log.e("List", "update");
             mvpView.updateMemoList(memoList);
         }
     }

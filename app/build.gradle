@@ -34,9 +34,13 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
 
     // flow layout
     compile 'org.apmem.tools:layouts:1.10@aar'
+
+    // for AndroidSwipeLayout
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
 
     // realm for android
     compile 'io.realm:realm-android:0.84.1'

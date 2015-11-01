@@ -21,7 +21,9 @@ import biz.info_cloud.simplememo.ui.presenter.Presenter;
 import biz.info_cloud.simplememo.util.StringUtil;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import rx.Observable;
+import rx.Subscription;
 
 public class ContentListFragment extends BaseFragment implements ContentListPresenter.MvpView {
     private ContentListAdapter contentListAdapter;
@@ -62,6 +64,14 @@ public class ContentListFragment extends BaseFragment implements ContentListPres
     @Override
     public void updateMemoList(List<Memo> memoList) {
         contentListAdapter.updateMemoList(memoList);
+    }
+
+    // ButterKnife event handler
+
+    @OnItemClick(R.id.content_list)
+    public void onContenListItemClicked(int position) {
+        Memo memo = (Memo) contentListAdapter.getItem(position);
+        contentListPresenter.onListItemClicked(memo);
     }
 
     static class ContentListAdapter extends BaseAdapter {
@@ -112,9 +122,10 @@ public class ContentListFragment extends BaseFragment implements ContentListPres
                         .filter(tag -> !StringUtil.isNullOrEmpty(tag.getName()))
                         .forEach(tag -> {
                             View tagView = this.activity.getLayoutInflater()
-                                    .inflate(R.layout.tag_flow_item, viewHolder.tags);
+                                    .inflate(R.layout.tag_flow_item, viewHolder.tags, false);
                             TagViewHolder tagViewHolder = new TagViewHolder(tagView);
                             tagViewHolder.tag.setText(tag.getName());
+                            viewHolder.tags.addView(tagView);
                         });
             }
             return view;
@@ -129,15 +140,6 @@ public class ContentListFragment extends BaseFragment implements ContentListPres
             FlowLayout tags;
 
             ItemViewHolder(View view) {
-                ButterKnife.bind(this, view);
-            }
-        }
-
-        static class TagViewHolder {
-            @Bind(R.id.tagflow_item)
-            TextView tag;
-
-            TagViewHolder(View view) {
                 ButterKnife.bind(this, view);
             }
         }

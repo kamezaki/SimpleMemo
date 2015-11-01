@@ -15,7 +15,8 @@ public class FindMemoUseCase extends DefaultUseCase {
     private String memoId;
 
     @Inject
-    protected FindMemoUseCase(ThreadExecutor threadExecutor,
+    protected FindMemoUseCase(MemoRepository repository,
+                              ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread) {
         super(threadExecutor, postExecutionThread);
         this.repository = repository;
