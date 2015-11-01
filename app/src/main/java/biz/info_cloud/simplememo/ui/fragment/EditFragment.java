@@ -3,10 +3,12 @@ package biz.info_cloud.simplememo.ui.fragment;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -19,6 +21,7 @@ import biz.info_cloud.simplememo.ui.presenter.Presenter;
 import biz.info_cloud.simplememo.util.StringUtil;
 import butterknife.Bind;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import rx.Observable;
 
 public class EditFragment extends BaseFragment implements EditPresenter.MvpView {
@@ -33,8 +36,8 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
     @Bind(R.id.edit_content) EditText editContent;
     @Bind(R.id.save_button) Button btnSave;
     @Bind(R.id.cancel_button) Button btnCancel;
-    @Bind(R.id.tags_layout)
-    FlowLayout tagsLayout;
+    @Bind(R.id.tags_layout) FlowLayout tagsLayout;
+    @Bind(R.id.edit_tag) EditText editTag;
 
     @Override
     public int getLayoutResourceId() {
@@ -70,6 +73,15 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
                 editPresenter.findMemo(menuId);
             }
         }
+
+        editTag.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (editTag.length() < 1) {
+                return true;
+            }
+
+            editPresenter.addTag(editTag.getText().toString(), this.memo);
+            return true;
+        });
     }
 
     @Override
@@ -95,6 +107,20 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
         editPresenter.update(memo);
     }
 
+//    @OnEditorAction(R.id.edit_tag)
+//    boolean onTagEditorAction(KeyEvent keyEvent) {
+//        if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENDCALL
+//                && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//            if (editTag.length() < 1) {
+//                return true;
+//            }
+//
+//            editPresenter.addTag(editTag.getText().toString(), this.memo);
+//            return true;
+//        }
+//        return false;
+//    }
+
     // fragment intrinsic functions
 
     private void handleSaveButton(boolean enable) {
@@ -103,7 +129,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
 
     private void showTagsView(@NonNull Memo memo) {
         // remove tags view except tag editor
-        this.tagsLayout.removeViews(0, this.tagsLayout.getChildCount() - 1);
+        this.tagsLayout.removeAllViews();
         Observable.from(memo.getTags())
                 .forEach(tag -> {
                     View tagView = this.getActivity().getLayoutInflater()
@@ -111,7 +137,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
                     TagViewHolder tagViewHolder = new TagViewHolder(tagView);
                     tagViewHolder.tag.setText(tag.getName());
                     // insert tag view before tag editor
-                    this.tagsLayout.addView(tagView, this.tagsLayout.getChildCount() - 1);
+                    this.tagsLayout.addView(tagView);
                 });
     }
 

@@ -12,4 +12,6 @@
     <string name="item_title">Title</string>
     <string name="item_content">Description</string>
     <string name="item_tags">Tags</string>
+    <string name="input_tag_hint">(Input new tag here)</string>
+    <string name="input_content_hint">(Write memo here)</string>
 </resources>

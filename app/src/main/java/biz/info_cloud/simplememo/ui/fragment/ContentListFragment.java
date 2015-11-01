@@ -117,6 +117,7 @@ public class ContentListFragment extends BaseFragment implements ContentListPres
             viewHolder.title.setText(memo.getTitle());
             viewHolder.content.setText(memo.getContent());
 
+            viewHolder.tags.removeAllViews();
             if (memo.getTags() != null) {
                 Observable.from(memo.getTags())
                         .filter(tag -> !StringUtil.isNullOrEmpty(tag.getName()))

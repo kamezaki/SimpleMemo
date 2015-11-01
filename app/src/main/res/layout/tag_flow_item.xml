@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/tag_horizontal_padding"
+    android:paddingRight="@dimen/tag_horizontal_padding"
+    android:layout_marginLeft="@dimen/tag_horizontal_margin"
+    android:layout_marginRight="@dimen/tag_horizontal_margin"
+    android:layout_marginTop="@dimen/tag_vertical_margin"
+    android:layout_marginBottom="@dimen/tag_vertical_margin"
+    android:background="@drawable/tag_item"
     android:id="@+id/tagflow_item">
 
 </TextView>

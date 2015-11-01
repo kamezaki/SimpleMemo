@@ -6,31 +6,30 @@ import javax.inject.Inject;
 
 import biz.info_cloud.simplememo.di.PerActivity;
 import biz.info_cloud.simplememo.domain.Memo;
-import biz.info_cloud.simplememo.domain.MemoRepository;
-import biz.info_cloud.simplememo.domain.executor.PostExecutionThread;
-import biz.info_cloud.simplememo.domain.executor.ThreadExecutor;
-import biz.info_cloud.simplememo.domain.usecase.DefaultUseCase;
+import biz.info_cloud.simplememo.domain.usecase.AddTagUseCase;
 import biz.info_cloud.simplememo.domain.usecase.FindMemoUseCase;
 import biz.info_cloud.simplememo.domain.usecase.UpdateMemoUseCase;
 import biz.info_cloud.simplememo.ui.navigation.Navigator;
 import biz.info_cloud.simplememo.util.StringUtil;
-import rx.Observable;
 import rx.Subscriber;
 
 @PerActivity
 public class EditPresenter implements Presenter {
     private Navigator navigator;
     private FindMemoUseCase findMemoUseCase;
-    private UpdateMemoUseCase updateUsecase;
+    private UpdateMemoUseCase updateUseCase;
+    private AddTagUseCase addTagUseCase;
     private MvpView mvpView;
 
     @Inject
     public EditPresenter(Navigator navigator,
                          FindMemoUseCase findMemoUseCase,
-                         UpdateMemoUseCase updateMemoUseCase) {
+                         UpdateMemoUseCase updateMemoUseCase,
+                         AddTagUseCase addTagUseCase) {
         this.navigator = navigator;
         this.findMemoUseCase = findMemoUseCase;
-        this.updateUsecase = updateMemoUseCase;
+        this.updateUseCase = updateMemoUseCase;
+        this.addTagUseCase = addTagUseCase;
     }
 
     public void setMvpView(MvpView mvpView) {
@@ -55,7 +54,7 @@ public class EditPresenter implements Presenter {
     @Override
     public void destroy() {
         this.findMemoUseCase.unsubscribe();
-        this.updateUsecase.unsubscribe();
+        this.updateUseCase.unsubscribe();
     }
 
     public void cancel() {
@@ -70,7 +69,11 @@ public class EditPresenter implements Presenter {
     }
 
     public void update(@NonNull Memo newMemo) {
-        this.updateUsecase.execute(newMemo, new UpdateSubscriber());
+        this.updateUseCase.execute(newMemo, new UpdateSubscriber());
+    }
+
+    public void addTag(@NonNull String newTag, @NonNull Memo memo) {
+        this.addTagUseCase.execute(newTag, memo, new UpdateTagsSubscriber());
     }
 
     private class FindMemoSubscriber extends Subscriber<Memo> {
@@ -90,6 +93,24 @@ public class EditPresenter implements Presenter {
             if (memo != null) {
                 mvpView.showMemo(memo);
             }
+        }
+    }
+
+    private class UpdateTagsSubscriber extends Subscriber<Memo> {
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(Memo memo) {
+            mvpView.showMemo(memo);
         }
     }
 
