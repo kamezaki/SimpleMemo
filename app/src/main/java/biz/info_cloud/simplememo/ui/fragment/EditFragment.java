@@ -24,6 +24,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
     public static final String BUNDLE_MEMO_ID = EditFragment.class.getCanonicalName() + ".BUNDLE_MEMO_ID";
 
     private Memo memo;
+    private boolean dirty = false;
 
     @Inject
     EditPresenter editPresenter;
@@ -75,6 +76,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
                 return true;
             }
 
+            this.dirty = true;
             editPresenter.addTag(editTag.getText().toString(), this.memo);
             return true;
         });
@@ -95,12 +97,21 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
     @OnClick(R.id.save_button)
     void onSave() {
         if (this.memo == null) {
+            this.dirty = true;
             this.memo = new Memo(editTitle.getText().toString(), editContent.getText().toString());
         } else {
-            this.memo.setTitle(editTitle.getText().toString());
-            this.memo.setContent(editContent.getText().toString());
+            if (!editTitle.getText().toString().equals(memo.getTitle())) {
+                this.dirty = true;
+                this.memo.setTitle(editTitle.getText().toString());
+            }
+            if (!editContent.getText().toString().equals(memo.getContent())) {
+                this.dirty = true;
+                this.memo.setContent(editContent.getText().toString());
+            }
         }
-        editPresenter.update(memo);
+        if (this.dirty == true) {
+            editPresenter.update(memo);
+        }
     }
 
     // fragment intrinsic functions
