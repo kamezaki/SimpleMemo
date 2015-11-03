@@ -16,7 +16,6 @@ public class ContentListPresenter implements Presenter {
     private Navigator navigator;
     private GetMemoListUseCase getMemoListUseCase;
 
-
     @Inject
     public ContentListPresenter(Navigator navigator, GetMemoListUseCase getMemoListUseCase) {
         this.navigator = navigator;
