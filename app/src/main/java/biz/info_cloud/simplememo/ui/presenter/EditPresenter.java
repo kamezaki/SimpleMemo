@@ -1,6 +1,7 @@
 package biz.info_cloud.simplememo.ui.presenter;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import javax.inject.Inject;
 
@@ -15,6 +16,7 @@ import rx.Subscriber;
 
 @PerActivity
 public class EditPresenter implements Presenter {
+    private static final String TAG = EditPresenter.class.getSimpleName();
     private Navigator navigator;
     private FindMemoUseCase findMemoUseCase;
     private UpdateMemoUseCase updateUseCase;
@@ -85,7 +87,7 @@ public class EditPresenter implements Presenter {
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "find memo error", e);
         }
 
         @Override
@@ -105,7 +107,7 @@ public class EditPresenter implements Presenter {
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "update tag error", e);
         }
 
         @Override
@@ -123,7 +125,7 @@ public class EditPresenter implements Presenter {
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "update error", e);
         }
 
         @Override

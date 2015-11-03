@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 import biz.info_cloud.simplememo.domain.Memo;
 import biz.info_cloud.simplememo.domain.Tag;
 import biz.info_cloud.simplememo.util.StringUtil;
+import io.realm.RealmList;
 import rx.Observable;
 
 @Singleton
@@ -42,6 +43,7 @@ public class MemoDataMapper implements DataMapper<Memo,RealmMemo> {
                         ? UUID.randomUUID().toString() : domainObject.getId());
         realmMemo.setTitle(domainObject.getTitle());
         realmMemo.setContent(domainObject.getContent());
+        realmMemo.setTags(new RealmList<>());
         Observable.from(domainObject.getTags())
                 .filter(tag -> !StringUtil.isNullOrEmpty(tag.getName()))
                 .map(tag -> tagDataMapper.mapToRealm(tag))

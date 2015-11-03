@@ -3,12 +3,9 @@ package biz.info_cloud.simplememo.ui.fragment;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -21,7 +18,6 @@ import biz.info_cloud.simplememo.ui.presenter.Presenter;
 import biz.info_cloud.simplememo.util.StringUtil;
 import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.OnEditorAction;
 import rx.Observable;
 
 public class EditFragment extends BaseFragment implements EditPresenter.MvpView {
@@ -106,20 +102,6 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
         }
         editPresenter.update(memo);
     }
-
-//    @OnEditorAction(R.id.edit_tag)
-//    boolean onTagEditorAction(KeyEvent keyEvent) {
-//        if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENDCALL
-//                && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//            if (editTag.length() < 1) {
-//                return true;
-//            }
-//
-//            editPresenter.addTag(editTag.getText().toString(), this.memo);
-//            return true;
-//        }
-//        return false;
-//    }
 
     // fragment intrinsic functions
 

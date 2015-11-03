@@ -24,7 +24,7 @@ public class TagDataMapper implements DataMapper<Tag, RealmTag> {
     public RealmTag mapToRealm(@NonNull Tag domainObject) {
         RealmTag realmTag = new RealmTag();
         realmTag.setName(domainObject.getName());
-        return  null;
+        return  realmTag;
     }
 
 }
