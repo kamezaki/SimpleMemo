@@ -85,6 +85,11 @@ public class EditPresenter implements Presenter {
         mvpView.showMemo(memo);
     }
 
+    public void deleteTag(@NonNull String deleteTag, @NonNull Memo memo) {
+        memo.removeTag(deleteTag);
+        mvpView.showMemo(memo);
+    }
+
     private class FindMemoSubscriber extends Subscriber<Memo> {
 
         @Override

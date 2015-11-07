@@ -141,7 +141,14 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
                             .inflate(R.layout.tag_flow_item, this.tagsLayout, false);
                     TagViewHolder tagViewHolder = new TagViewHolder(tagView);
                     tagViewHolder.tag.setText(tag.getName());
-                    // insert tag view before tag editor
+
+                    tagViewHolder.delte.setTag(tag.getName());
+                    tagViewHolder.delte.setOnClickListener(view -> {
+                        String deleteTag = (String) view.getTag();
+                        this.dirty = true;
+                        editPresenter.deleteTag(deleteTag, memo);
+                    });
+
                     this.tagsLayout.addView(tagView);
                 });
     }
