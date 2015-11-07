@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/tag_horizontal_padding"
@@ -8,7 +9,18 @@
     android:layout_marginRight="@dimen/tag_horizontal_margin"
     android:layout_marginTop="@dimen/tag_vertical_margin"
     android:layout_marginBottom="@dimen/tag_vertical_margin"
-    android:background="@drawable/tag_item"
-    android:id="@+id/tagflow_item">
+    android:background="@drawable/tag_item">
 
-</TextView>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@android:drawable/ic_delete"
+        android:id="@+id/tagflow_item_delete" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/tagflow_item_text" />
+</LinearLayout>

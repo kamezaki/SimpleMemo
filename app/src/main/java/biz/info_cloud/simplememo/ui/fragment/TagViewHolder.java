@@ -8,7 +8,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class TagViewHolder {
-    @Bind(R.id.tagflow_item)
+    @Bind(R.id.tagflow_item_text)
     TextView tag;
 
     TagViewHolder(View view) {
