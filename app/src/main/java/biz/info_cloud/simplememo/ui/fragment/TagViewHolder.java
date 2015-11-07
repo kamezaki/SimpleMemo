@@ -15,6 +15,13 @@ public class TagViewHolder {
     ImageView delte;
 
     TagViewHolder(View view) {
+        this(view, false);
+    }
+
+    TagViewHolder(View view, boolean enableDelete) {
         ButterKnife.bind(this, view);
+        if (enableDelete) {
+            this.delte.setVisibility(View.VISIBLE);
+        }
     }
 }

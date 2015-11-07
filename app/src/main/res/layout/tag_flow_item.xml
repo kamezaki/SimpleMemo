@@ -16,12 +16,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@android:drawable/ic_delete"
-        android:id="@+id/tagflow_item_delete" />
+        android:id="@+id/tagflow_item_delete"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_gravity="center_vertical"
         android:id="@+id/tagflow_item_text" />
 </LinearLayout>

@@ -139,7 +139,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
                 .forEach(tag -> {
                     View tagView = this.getActivity().getLayoutInflater()
                             .inflate(R.layout.tag_flow_item, this.tagsLayout, false);
-                    TagViewHolder tagViewHolder = new TagViewHolder(tagView);
+                    TagViewHolder tagViewHolder = new TagViewHolder(tagView, true);
                     tagViewHolder.tag.setText(tag.getName());
 
                     tagViewHolder.delte.setTag(tag.getName());
