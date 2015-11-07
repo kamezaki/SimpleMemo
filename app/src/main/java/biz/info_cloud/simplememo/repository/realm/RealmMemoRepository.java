@@ -10,6 +10,7 @@ import biz.info_cloud.simplememo.domain.Memo;
 import biz.info_cloud.simplememo.domain.MemoRepository;
 import biz.info_cloud.simplememo.domain.Tag;
 import biz.info_cloud.simplememo.domain.exception.ItemNotFoundException;
+import biz.info_cloud.simplememo.util.StringUtil;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -70,6 +71,10 @@ public class RealmMemoRepository implements MemoRepository {
                     realmMemo.setUpdateTimestamp(Calendar.getInstance().getTimeInMillis());
                     RealmMemo result = r.copyToRealmOrUpdate(realmMemo);
                     resultMemo[0] = memoDataMapper.mapToDomain(result);
+                    if (newMemo.getTags() != null) {
+                        Observable.from(newMemo.getTags())
+                                .forEach(tag -> addTagToMemo(tag.getName(), resultMemo[0]).toBlocking().last());
+                    }
                 });
                 subscriber.onNext(resultMemo[0]);
                 subscriber.onCompleted();
