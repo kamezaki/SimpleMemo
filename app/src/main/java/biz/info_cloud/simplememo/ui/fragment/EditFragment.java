@@ -1,8 +1,7 @@
 package biz.info_cloud.simplememo.ui.fragment;
 
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +17,9 @@ import biz.info_cloud.simplememo.ui.presenter.Presenter;
 import biz.info_cloud.simplememo.util.StringUtil;
 import butterknife.Bind;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
+import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 import rx.Observable;
 
 public class EditFragment extends BaseFragment implements EditPresenter.MvpView {
@@ -50,36 +52,15 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
     public void initialize() {
         getComponent().inject(this);
         editPresenter.setMvpView(this);
-        editTitle.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                handleSaveButton(s.length() > 0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
 
         btnSave.setEnabled(editTitle.length() > 0);
+        this.memo = createNewMemo();
         if (getArguments() != null) {
             String menuId = getArguments().getString(BUNDLE_MEMO_ID);
             if (!StringUtil.isNullOrEmpty(menuId)) {
                 editPresenter.findMemo(menuId);
             }
         }
-
-        editTag.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (editTag.length() < 1) {
-                return true;
-            }
-
-            this.dirty = true;
-            editPresenter.addTag(editTag.getText().toString(), this.memo);
-            return true;
-        });
     }
 
     @Override
@@ -96,22 +77,53 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
 
     @OnClick(R.id.save_button)
     void onSave() {
-        if (this.memo == null) {
+        if (!editTitle.getText().toString().equals(memo.getTitle())) {
             this.dirty = true;
-            this.memo = new Memo(editTitle.getText().toString(), editContent.getText().toString());
-        } else {
-            if (!editTitle.getText().toString().equals(memo.getTitle())) {
-                this.dirty = true;
-                this.memo.setTitle(editTitle.getText().toString());
-            }
-            if (!editContent.getText().toString().equals(memo.getContent())) {
-                this.dirty = true;
-                this.memo.setContent(editContent.getText().toString());
-            }
+            this.memo.setTitle(editTitle.getText().toString());
+        }
+        if (!editContent.getText().toString().equals(memo.getContent())) {
+            this.dirty = true;
+            this.memo.setContent(editContent.getText().toString());
         }
         if (this.dirty == true) {
-            editPresenter.update(memo);
+            editPresenter.updateMemo(memo);
         }
+    }
+
+    @OnFocusChange(R.id.edit_title)
+    void onTitleFocusChanged(boolean hasFocus) {
+        if (!hasFocus && editTitle != null) {
+            editPresenter.setTitle(editTitle.getText().toString(), memo);
+        }
+    }
+
+    @OnTextChanged(R.id.edit_title)
+    void OnTitleTextChanged(CharSequence text) {
+        handleSaveButton(text.length() > 0);
+    }
+
+    @OnFocusChange(R.id.edit_content)
+    void onContentFocusChanged(boolean hasFocus) {
+        if (!hasFocus && editContent != null) {
+            editPresenter.setContent(editContent.getText().toString(), memo);
+        }
+    }
+
+    @OnEditorAction(R.id.edit_tag)
+    boolean onEditTagAction(KeyEvent key) {
+        if (editTag.length() < 1) {
+            return true;
+        }
+
+        this.dirty = true;
+        editPresenter.addTag(editTag.getText().toString(), this.memo);
+        return true;
+
+    }
+
+
+    private Memo createNewMemo() {
+        return new Memo(editTitle.getText().toString(), editContent.getText().toString());
     }
 
     // fragment intrinsic functions
@@ -141,6 +153,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
         this.memo = memo;
         editTitle.setText(memo.getTitle());
         editContent.setText(memo.getContent());
+        editTag.setText("");
         showTagsView(memo);
     }
 }

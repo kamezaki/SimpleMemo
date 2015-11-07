@@ -21,18 +21,15 @@ public class EditPresenter implements Presenter {
     private Navigator navigator;
     private FindMemoUseCase findMemoUseCase;
     private UpdateMemoUseCase updateUseCase;
-    private AddTagUseCase addTagUseCase;
     private MvpView mvpView;
 
     @Inject
     public EditPresenter(Navigator navigator,
                          FindMemoUseCase findMemoUseCase,
-                         UpdateMemoUseCase updateMemoUseCase,
-                         AddTagUseCase addTagUseCase) {
+                         UpdateMemoUseCase updateMemoUseCase) {
         this.navigator = navigator;
         this.findMemoUseCase = findMemoUseCase;
         this.updateUseCase = updateMemoUseCase;
-        this.addTagUseCase = addTagUseCase;
     }
 
     public void setMvpView(MvpView mvpView) {
@@ -71,8 +68,18 @@ public class EditPresenter implements Presenter {
         this.findMemoUseCase.execute(memoId, new FindMemoSubscriber());
     }
 
-    public void update(@NonNull Memo newMemo) {
+    public void updateMemo(@NonNull Memo newMemo) {
         this.updateUseCase.execute(newMemo, new UpdateSubscriber());
+    }
+
+    public void setTitle(String title, @NonNull Memo memo) {
+        memo.setTitle(title);
+        mvpView.showMemo(memo);
+    }
+
+    public void setContent(String content, @NonNull Memo memo) {
+        memo.setContent(content);
+        mvpView.showMemo(memo);
     }
 
     public void addTag(@NonNull String newTag, @NonNull Memo memo) {

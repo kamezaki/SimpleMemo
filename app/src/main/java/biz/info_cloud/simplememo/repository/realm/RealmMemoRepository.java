@@ -73,7 +73,7 @@ public class RealmMemoRepository implements MemoRepository {
                     resultMemo[0] = memoDataMapper.mapToDomain(result);
                     if (newMemo.getTags() != null) {
                         Observable.from(newMemo.getTags())
-                                .forEach(tag -> addTagToMemo(tag.getName(), resultMemo[0]).toBlocking().last());
+                                .forEach(tag -> addTag(r, tag.getName(), resultMemo[0]));
                     }
                 });
                 subscriber.onNext(resultMemo[0]);
@@ -86,27 +86,38 @@ public class RealmMemoRepository implements MemoRepository {
         });
     }
 
+    private Memo addTag(Realm realm, String tag, Memo memo) {
+        RealmMemo resultMemo;
+        RealmQuery<RealmMemo> query = realm.where(RealmMemo.class);
+        resultMemo = query.equalTo("uuid", memo.getId()).findFirst();
+        if (resultMemo == null) {
+            return null;
+        }
+        if (StringUtil.isNullOrEmpty(tag) || memo == null) {
+            return null;
+        }
+        RealmTag targetRealmTag = new RealmTag();
+        targetRealmTag.setName(tag);
+        if (!resultMemo.getTags().contains(targetRealmTag)) {
+            resultMemo.getTags().add(targetRealmTag);
+        }
+        return memoDataMapper.mapToDomain(resultMemo);
+    }
+
     @Override
     public Observable<Memo> addTagToMemo(String tag, Memo memo) {
         return Observable.create(subscriber -> {
             Realm realm = null;
             try {
                 realm = getRealm();
-                RealmMemo[] resultMemo = new RealmMemo[1];
+                Memo[] resultMemo = new Memo[1];
                 realm.executeTransaction(r -> {
-                    RealmQuery<RealmMemo> query = r.where(RealmMemo.class);
-                    resultMemo[0] = query.equalTo("uuid", memo.getId()).findFirst();
-                    if (resultMemo[0] != null) {
-                        RealmTag targetRealmTag = new RealmTag();
-                        targetRealmTag.setName(tag);
-                        if (!resultMemo[0].getTags().contains(targetRealmTag)) {
-                            resultMemo[0].getTags().add(targetRealmTag);
-                        }
-                    }
+                    resultMemo[0] = addTag(r, tag, memo);
                 });
-                if (resultMemo[0] != null) {
-                    subscriber.onNext(memoDataMapper.mapToDomain(resultMemo[0]));
+                if (resultMemo[0] == null) {
+                    throw new IllegalArgumentException("tag or memo is null");
                 }
+                subscriber.onNext(resultMemo[0]);
                 subscriber.onCompleted();
             } catch (Exception e) {
                 subscriber.onError(e);
