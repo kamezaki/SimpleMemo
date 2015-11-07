@@ -25,9 +25,6 @@ import rx.Observable;
 public class EditFragment extends BaseFragment implements EditPresenter.MvpView {
     public static final String BUNDLE_MEMO_ID = EditFragment.class.getCanonicalName() + ".BUNDLE_MEMO_ID";
 
-    private Memo memo;
-    private boolean dirty = false;
-
     @Inject
     EditPresenter editPresenter;
 
@@ -54,7 +51,6 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
         editPresenter.setMvpView(this);
 
         btnSave.setEnabled(editTitle.length() > 0);
-        this.memo = createNewMemo();
         if (getArguments() != null) {
             String menuId = getArguments().getString(BUNDLE_MEMO_ID);
             if (!StringUtil.isNullOrEmpty(menuId)) {
@@ -77,23 +73,13 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
 
     @OnClick(R.id.save_button)
     void onSave() {
-        if (!editTitle.getText().toString().equals(memo.getTitle())) {
-            this.dirty = true;
-            this.memo.setTitle(editTitle.getText().toString());
-        }
-        if (!editContent.getText().toString().equals(memo.getContent())) {
-            this.dirty = true;
-            this.memo.setContent(editContent.getText().toString());
-        }
-        if (this.dirty == true) {
-            editPresenter.updateMemo(memo);
-        }
+        editPresenter.updateMemo(editTitle.getText().toString(), editContent.getText().toString());
     }
 
     @OnFocusChange(R.id.edit_title)
     void onTitleFocusChanged(boolean hasFocus) {
         if (!hasFocus && editTitle != null) {
-            editPresenter.setTitle(editTitle.getText().toString(), memo);
+            editPresenter.setTitle(editTitle.getText().toString());
         }
     }
 
@@ -105,7 +91,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
     @OnFocusChange(R.id.edit_content)
     void onContentFocusChanged(boolean hasFocus) {
         if (!hasFocus && editContent != null) {
-            editPresenter.setContent(editContent.getText().toString(), memo);
+            editPresenter.setContent(editContent.getText().toString());
         }
     }
 
@@ -115,8 +101,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
             return true;
         }
 
-        this.dirty = true;
-        editPresenter.addTag(editTag.getText().toString(), this.memo);
+        editPresenter.addTag(editTag.getText().toString());
         return true;
 
     }
@@ -145,8 +130,7 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
                     tagViewHolder.delte.setTag(tag.getName());
                     tagViewHolder.delte.setOnClickListener(view -> {
                         String deleteTag = (String) view.getTag();
-                        this.dirty = true;
-                        editPresenter.deleteTag(deleteTag, memo);
+                        editPresenter.deleteTag(deleteTag);
                     });
 
                     this.tagsLayout.addView(tagView);
@@ -157,7 +141,6 @@ public class EditFragment extends BaseFragment implements EditPresenter.MvpView 
 
     @Override
     public void showMemo(@NonNull Memo memo) {
-        this.memo = memo;
         editTitle.setText(memo.getTitle());
         editContent.setText(memo.getContent());
         editTag.setText("");

@@ -20,6 +20,8 @@ public class EditPresenter implements Presenter {
     private FindMemoUseCase findMemoUseCase;
     private UpdateMemoUseCase updateUseCase;
     private MvpView mvpView;
+    private Memo memo = new Memo("", "");
+    private boolean isDirty = false;
 
     @Inject
     public EditPresenter(Navigator navigator,
@@ -55,6 +57,10 @@ public class EditPresenter implements Presenter {
         this.updateUseCase.unsubscribe();
     }
 
+    private void setMemo(Memo memo) {
+        this.memo = memo;
+    }
+
     public void cancel() {
         navigator.back();
     }
@@ -66,27 +72,58 @@ public class EditPresenter implements Presenter {
         this.findMemoUseCase.execute(memoId, new FindMemoSubscriber());
     }
 
-    public void updateMemo(@NonNull Memo newMemo) {
-        this.updateUseCase.execute(newMemo, new UpdateSubscriber());
+    public void updateMemo(String title, String content) {
+        setTitleInternal(title);
+        setContentInternal(content);
+        if (this.isDirty) {
+            this.updateUseCase.execute(this.memo, new UpdateSubscriber());
+        }
     }
 
-    public void setTitle(String title, @NonNull Memo memo) {
+    private boolean setTitleInternal(String title) {
+        if (memo.getTitle().equals(title)) {
+            return false;
+        }
+        this.isDirty = true;
+        if (title == null) {
+            title = "";
+        }
         memo.setTitle(title);
-        mvpView.showMemo(memo);
+        return true;
+    }
+    public void setTitle(String title) {
+        if (setTitleInternal(title)) {
+            mvpView.showMemo(memo);
+        }
     }
 
-    public void setContent(String content, @NonNull Memo memo) {
+    private boolean setContentInternal(String content) {
+        if (memo.getContent().equals(content)) {
+            return false;
+        }
+        this.isDirty = true;
+        if (content == null) {
+            content = "";
+        }
         memo.setContent(content);
-        mvpView.showMemo(memo);
+        return true;
     }
 
-    public void addTag(@NonNull String newTag, @NonNull Memo memo) {
+    public void setContent(String content) {
+        if (setContentInternal(content)) {
+            mvpView.showMemo(memo);
+        }
+    }
+
+    public void addTag(@NonNull String newTag) {
         memo.addTag(newTag);
+        this.isDirty = true;
         mvpView.showMemo(memo);
     }
 
-    public void deleteTag(@NonNull String deleteTag, @NonNull Memo memo) {
+    public void deleteTag(@NonNull String deleteTag) {
         memo.removeTag(deleteTag);
+        this.isDirty = true;
         mvpView.showMemo(memo);
     }
 
@@ -105,6 +142,7 @@ public class EditPresenter implements Presenter {
         @Override
         public void onNext(Memo memo) {
             if (memo != null) {
+                setMemo(memo);
                 mvpView.showMemo(memo);
             }
         }
@@ -124,7 +162,8 @@ public class EditPresenter implements Presenter {
 
         @Override
         public void onNext(Memo memo) {
-
+            setMemo(memo);
+            isDirty = false;
         }
     }
 
