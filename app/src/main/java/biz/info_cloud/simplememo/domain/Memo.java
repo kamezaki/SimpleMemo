@@ -75,7 +75,7 @@ public class Memo {
     public void removeTag(String... tags) {
         if (tags != null && tags.length > 0) {
             Observable.from(tags)
-                    .filter(tag -> StringUtil.isNullOrEmpty(tag))
+                    .filter(tag -> !StringUtil.isNullOrEmpty(tag))
                     .forEach(tag -> tagList.remove(new Tag(tag)));
         }
     }
