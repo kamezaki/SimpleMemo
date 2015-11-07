@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import biz.info_cloud.simplememo.di.PerActivity;
 import biz.info_cloud.simplememo.domain.Memo;
+import biz.info_cloud.simplememo.domain.Tag;
 import biz.info_cloud.simplememo.domain.usecase.AddTagUseCase;
 import biz.info_cloud.simplememo.domain.usecase.FindMemoUseCase;
 import biz.info_cloud.simplememo.domain.usecase.UpdateMemoUseCase;
@@ -75,7 +76,8 @@ public class EditPresenter implements Presenter {
     }
 
     public void addTag(@NonNull String newTag, @NonNull Memo memo) {
-        this.addTagUseCase.execute(newTag, memo, new UpdateTagsSubscriber());
+        memo.addTag(newTag);
+        mvpView.showMemo(memo);
     }
 
     private class FindMemoSubscriber extends Subscriber<Memo> {
@@ -95,24 +97,6 @@ public class EditPresenter implements Presenter {
             if (memo != null) {
                 mvpView.showMemo(memo);
             }
-        }
-    }
-
-    private class UpdateTagsSubscriber extends Subscriber<Memo> {
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "update tag error", e);
-        }
-
-        @Override
-        public void onNext(Memo memo) {
-            mvpView.showMemo(memo);
         }
     }
 
