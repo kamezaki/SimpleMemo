@@ -7,8 +7,6 @@ import javax.inject.Inject;
 
 import biz.info_cloud.simplememo.di.PerActivity;
 import biz.info_cloud.simplememo.domain.Memo;
-import biz.info_cloud.simplememo.domain.Tag;
-import biz.info_cloud.simplememo.domain.usecase.AddTagUseCase;
 import biz.info_cloud.simplememo.domain.usecase.FindMemoUseCase;
 import biz.info_cloud.simplememo.domain.usecase.UpdateMemoUseCase;
 import biz.info_cloud.simplememo.ui.navigation.Navigator;
