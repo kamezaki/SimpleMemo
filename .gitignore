@@ -15,7 +15,10 @@
 *.class
 
 bin/
-gen
+gen/
+
+.gradle/
+build/
 
 /*/build/
 .log
@@ -32,4 +35,6 @@ gen
 
 /.idea/gradle.xml
 
+local.properties
 
+proguard/
