@@ -10,6 +10,7 @@ public interface MemoRepository {
     Observable<Memo> addTagToMemo(String tag, Memo memo);
     Observable<Memo> removeTagFromMemo(String tag, Memo memo);
     Observable<Memo> findMemo(String memoId);
+    Observable<List<Tag>> getTagList();
 
     Observable<List<Tag>> findTag(String input);
 

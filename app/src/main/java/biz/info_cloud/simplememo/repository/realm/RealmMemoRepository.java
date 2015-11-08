@@ -31,6 +31,8 @@ public class RealmMemoRepository implements MemoRepository {
         this.tagDataMapper = tagDataMapper;
     }
 
+
+
     @Override
     public Observable<List<Memo>> getMemoList(SortOrder orderByUpdate) {
         return AsyncSubject.create(subscriber -> {
@@ -172,6 +174,26 @@ public class RealmMemoRepository implements MemoRepository {
                     subscriber.onError(new ItemNotFoundException(String.format("memo [id : %s] not found", memoId)));
                 }
                 subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            } finally {
+                closeRealm(realm);
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Tag>> getTagList() {
+        return AsyncSubject.create(subscriber -> {
+            Realm realm = null;
+            try {
+                realm = getRealm();
+                RealmQuery<RealmTag> query = realm.where(RealmTag.class);
+                RealmResults<RealmTag> queryResult = query.findAll();
+                Observable.from(queryResult)
+                        .map(realmTag -> tagDataMapper.mapToDomain(realmTag))
+                        .toList()
+                        .subscribe(subscriber);
             } catch (Exception e) {
                 subscriber.onError(e);
             } finally {
