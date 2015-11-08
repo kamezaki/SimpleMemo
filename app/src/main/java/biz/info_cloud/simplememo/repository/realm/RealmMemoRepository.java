@@ -15,6 +15,7 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import rx.Observable;
+import rx.subjects.AsyncSubject;
 
 @Singleton
 public class RealmMemoRepository implements MemoRepository {
@@ -32,7 +33,7 @@ public class RealmMemoRepository implements MemoRepository {
 
     @Override
     public Observable<List<Memo>> getMemoList(SortOrder orderByUpdate) {
-        return Observable.create(subscriber -> {
+        return AsyncSubject.create(subscriber -> {
             Realm realm = null;
             try {
                 realm = getRealm();
@@ -61,7 +62,7 @@ public class RealmMemoRepository implements MemoRepository {
 
     @Override
     public Observable<Memo> createOrUpdateMemo(Memo newMemo) {
-        return Observable.create(subscriber -> {
+        return AsyncSubject.create(subscriber -> {
             Realm realm = null;
             try {
                 final Memo[] resultMemo = new Memo[1];
@@ -106,7 +107,7 @@ public class RealmMemoRepository implements MemoRepository {
 
     @Override
     public Observable<Memo> addTagToMemo(String tag, Memo memo) {
-        return Observable.create(subscriber -> {
+        return AsyncSubject.create(subscriber -> {
             Realm realm = null;
             try {
                 realm = getRealm();
@@ -129,7 +130,7 @@ public class RealmMemoRepository implements MemoRepository {
 
     @Override
     public Observable<Memo> removeTagFromMemo(String tag, Memo memo) {
-        return Observable.create(subscriber -> {
+        return AsyncSubject.create(subscriber -> {
             Realm realm = null;
             try {
                 realm = getRealm();
@@ -159,7 +160,7 @@ public class RealmMemoRepository implements MemoRepository {
 
     @Override
     public Observable<Memo> findMemo(String memoId) {
-        return Observable.create(subscriber -> {
+        return AsyncSubject.create(subscriber -> {
             Realm realm = null;
             try {
                 realm = getRealm();
@@ -181,7 +182,7 @@ public class RealmMemoRepository implements MemoRepository {
 
     @Override
     public Observable<List<Tag>> findTag(String input) {
-        return Observable.create(subscriber -> {
+        return AsyncSubject.create(subscriber -> {
             Realm realm = null;
             try {
                 realm = getRealm();
