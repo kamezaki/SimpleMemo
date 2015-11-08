@@ -13,4 +13,5 @@
     <dimen name="tag_horizontal_margin">2dp</dimen>
     <dimen name="tag_vertical_margin">2dp</dimen>
     <dimen name="tag_horizontal_padding">4dp</dimen>
+    <dimen name="tag_delete_button_size">14dp</dimen>
 </resources>
